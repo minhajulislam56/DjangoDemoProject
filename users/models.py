@@ -84,7 +84,7 @@ class StatusManager(models.Manager):
 class Status(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     content = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to=gen_filename, null=True, blank=True)
+    image = models.ImageField(upload_to=gen_filename, null=True, blank=True) #Django Storages --> AWS S3
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -96,6 +96,34 @@ class Status(models.Model):
     class Meta:
         verbose_name = 'Status Post'
         verbose_name_plural = 'Status Posts'
+
+
+
+
+#..........Demo Project............
+
+
+class Course(models.Model):
+    course_id       = models.CharField(primary_key=True, max_length=100)
+    author          = models.CharField(max_length=100)
+    is_approved     = models.BooleanField()
+    approved_by     = models.CharField(max_length=100)
+    outline         = models.TextField()
+    prerequisits    = models.TextField()
+    banner          = models.ImageField(null=True, blank=True)
+    private         = models.BooleanField()
+    tags            = models.CharField(max_length=200)
+    title           = models.CharField(max_length=100)
+    rating          = models.FloatField()
+    date_created    = models.DateTimeField(auto_now_add=True)
+    date_updated    = models.DateTimeField(auto_now=True)
+    fee             = models.FloatField()
+
+    def __str__(self):
+        return self.title
+
+
+
 
 
 

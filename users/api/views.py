@@ -66,21 +66,25 @@ class student_checking(APIView):
 
             return Response(data, status.HTTP_200_OK)
 
-            '''for p in data:
-                context={
-                    "Student Name": p.name,
-                    "Current CGPA": p.cgpa
-                }
-                return Response(context, status.HTTP_200_OK)'''
+            # for p in data:
+            #     context={
+            #         "Student Name": p.name,
+            #         "Current CGPA": p.cgpa
+            #     }
+            #     return Response(context, status.HTTP_200_OK)
         else:
             return Response({"Requested ID Not Found!"}, status.HTTP_200_OK)
 
 
-
+import json
 class quotes_view(APIView):
 
     def get(self, request, format=None):
         qu = quotes.objects.all().values()
+        #qu = quotes.objects.order_by('id')
+
+        #serializer = QuoteSerializer(qu, many=True)
+
         return Response(qu,  status=status.HTTP_200_OK)
 
 
@@ -118,29 +122,28 @@ class FileView(APIView):
         files = file_list.objects.all()
         fs = FileSerializer(files, many = True)
 
-        '''
-        extra = files.values('file')
-        no = extra.count()
-        
-        if extra:
-            fc={
-
-            }
-            fc['Total Files:']=no
-            x=1
-            for p in extra:
-                string="Not Elligible"
-                if p['file'].endswith('.jpg'):
-                    string="Elligible"
-                context={
-                    "File Format is": p['file'][-4:]+" / "+string,
-                    "File Name": p['file'],
-                    "Serial": x
-                }
-                fc['item no: '+str(x)] = context
-                x+=1
-
-            #return Response(fc, status=status.HTTP_200_OK)'''
+        # extra = files.values('file')
+        # no = extra.count()
+        #
+        # if extra:
+        #     fc={
+        #
+        #     }
+        #     fc['Total Files:']=no
+        #     x=1
+        #     for p in extra:
+        #         string="Not Elligible"
+        #         if p['file'].endswith('.jpg'):
+        #             string="Elligible"
+        #         context={
+        #             "File Format is": p['file'][-4:]+" / "+string,
+        #             "File Name": p['file'],
+        #             "Serial": x
+        #         }
+        #         fc['item no: '+str(x)] = context
+        #         x+=1
+        #
+        #     #return Response(fc, status=status.HTTP_200_OK)
 
         return Response(fs.data, status=status.HTTP_200_OK)
 
@@ -156,18 +159,19 @@ class GenericView(viewsets.ViewSet):
         queryset = quotes.objects.all()
         serializer = QuoteSerializer(queryset, many=True)
 
-        '''
-        xx=queryset.values('body')
-        xa=category.objects.filter(id=cat).values('name')
 
-        cat = list(queryset.values('category'))[0]['category']
-        for i in queryset:
-            #cat = list(i.values('category'))[0]['category']
-            context={
-                'body': i['body'],
-                'category': category.objects.filter(id=cat).values('name')
-            }
-        '''
+        # xx=queryset.values('body')
+        # xa=category.objects.filter(id=cat).values('name')
+        #
+        # cat = list(queryset.values('category'))[0]['category']
+        # for i in queryset:
+        #     #cat = list(i.values('category'))[0]['category']
+        #     context={
+        #         'body': i['body'],
+        #         'category': category.objects.filter(id=cat).values('name')
+        #     }
+
+
         final_response={
 
         }
@@ -221,34 +225,73 @@ class FileTask(APIView):
             return Response(image_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    '''
-    def delete(self, request, *args, **kwargs):
 
-        ims = ImageSerializer(data=request.data)
+    # def delete(self, request, *args, **kwargs):
+    #
+    #     ims = ImageSerializer(data=request.data)
+    #
+    #     if ims.is_valid():
+    #         im = ImageFile.objects.all()
+    #         imd = ImageSerializer(im, many=True)
+    #
+    #         for i in imd.data:
+    #             if i == ims.data:
+    #                 i.delete()
+    #                 return Response(i, status=status.HTTP_200_OK)
 
-        if ims.is_valid():
-            im = ImageFile.objects.all()
-            imd = ImageSerializer(im, many=True)
-
-            for i in imd.data:
-                if i == ims.data:
-                    i.delete()
-                    return Response(i, status=status.HTTP_200_OK)
-    '''
 
 
     def get(self, request):
         image = ImageFile.objects.all()
         ims = ImageSerializer(image, many=True)
 
-        '''
-        k=1
-        data = {}
-        for i in ims.data:
-            if i['id'] == k:
-                data[str(k)] = {"image": i['image']}
-                k+=1
+
+        # k=1
+        # data = {}
+        # for i in ims.data:
+        #     if i['id'] == k:
+        #         data[str(k)] = {"image": i['image']}
+        #         k+=1
                 
-        '''
+
         return Response(ims.data, status=status.HTTP_200_OK)
 
+
+
+#..........Demo Project Tasks.............
+
+from users.models import Course
+from .serializers import CourseSerializer
+
+class CourseView(APIView):
+
+    def get(self, request, format=None):
+        qs = Course.objects.all()
+        serializer = CourseSerializer(qs, many=True)
+
+        course_list = []
+
+        for i in serializer.data:
+
+            gen_tags = i.get("tags").split("#")
+            gen_tags.remove("")
+
+            context = {
+                "course_id": i["course_id"],
+                "author": i["author"],
+                "is_approved": i["is_approved"],
+                "outline": i["outline"],
+                "prerequisits": i["prerequisits"],
+                "banner": i["banner"],
+                "private": i["private"],
+                "tags": gen_tags,
+                "title": i["title"],
+                "rating": i["rating"],
+                "date_created": i["date_created"],
+                "date_updated": i["date_updated"],
+                "fee": i["fee"]
+            }
+
+            course_list.append(context)
+
+        return Response(course_list, status=status.HTTP_200_OK)

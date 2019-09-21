@@ -1,7 +1,23 @@
 from django.urls import path, include
 from users.api import views
+from users.api import myviews
+
 from .views import Checking, student_checking, FileView, GenericView, FilePUDView, quotes_view, quotes_view2, \
-                FileTask, deletingFile, get_view
+                FileTask, deletingFile, get_view, CourseView
+
+from .myviews import (
+    StatusAll,
+    StatusAPIView,
+    StatusCreateAPIView,
+    StatusRetriveAPIView,
+    StatusUpdateAPIView,
+    StatusDeleteAPIView,
+    StatusMixinsView,
+    StatusAPIDetailView,
+
+    #Practicing...
+    StaffDetection,
+    )
 
 urlpatterns = [
     path('check/', Checking.as_view()),
@@ -17,4 +33,21 @@ urlpatterns = [
     path('image/<int:pk>/', views.deleteFile),
     path('delete/<int:pk>/', deletingFile.as_view()),
     path('single/<int:pk>/', get_view.as_view()),
+
+
+    path('status/', StatusAPIView.as_view()),
+    path('status/<id>/', StatusAPIDetailView.as_view()),
+    #path('status/create/', StatusCreateAPIView.as_view()),
+    #path('status/<id>/', StatusRetriveAPIView.as_view()), #<pk> is default
+    #path('status/<pk>/update/', StatusUpdateAPIView.as_view()),
+    #path('status/<pk>/delete/', StatusDeleteAPIView.as_view()),
+    #path('status/mxn/<pk>', StatusMixinsView.as_view()),
+    path('staff/', StaffDetection.as_view()),
+
+
+
+    #.......Demo Project.....
+
+    path('courses/', CourseView.as_view()),
+
 ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import student_list, file_list, category, quotes, ImageFile
+from .models import student_list, file_list, category, quotes, ImageFile, User
 
 # Register your models here.
 
@@ -64,3 +64,68 @@ class StatusAdmin(admin.ModelAdmin):
         #model = Status
 
 admin.site.register(Status, StatusAdmin)
+
+
+#...Practicing...
+class UserView(admin.ModelAdmin):
+    list_display = [
+        'username',
+        'email',
+        'is_staff'
+    ]
+    class Meta:
+        model = User
+admin.site.register(User, UserView)
+
+
+
+
+
+
+
+
+
+#..........Demo Project..........
+
+from users.models import Course
+
+class CourseView(admin.ModelAdmin):
+    list_display = [
+      'course_id',
+      'author',
+      'is_approved',
+      'approved_by',
+      'outline',
+      'prerequisits',
+      'banner',
+      'private',
+      'tags',
+      'title',
+      'rating',
+      'date_created',
+      'date_updated',
+      'fee'
+    ]
+    class Meta:
+        model = Course
+
+admin.site.register(Course, CourseView)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
